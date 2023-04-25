@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">myprice</string>
+    <string name="price_name">Price</string>
+    <string name="apple">Apple</string>
+    <string name="submit_button">Submit</string>
+
+
+</resources>
