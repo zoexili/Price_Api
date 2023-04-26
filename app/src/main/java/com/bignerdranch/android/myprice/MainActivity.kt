@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import com.bignerdranch.android.myprice.databinding.ActivityMainBinding
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,34 +22,32 @@ class MainActivity : AppCompatActivity() {
         val myapi = "7E7D26AB23B04E929FEEE6151E907080"
         val mytype = "product"
         val mydomain = "amazon.com"
-        val myasin = "B073JYC4XM"
+        val myasin = "B08ZFPQGK5"
 
         binding.submitButton.setOnClickListener {
             Log.e("submit_button", "submit button clicked")
             val call = serviceGenerator.getPosts(myapi, mytype, mydomain, myasin)
-            call.enqueue(object : Callback<MutableList<PostModel>> {
+            call.enqueue(object : Callback<ApiResponse> {
                 override fun onResponse(
-                    call: Call<MutableList<PostModel>>,
-                    response: Response<MutableList<PostModel>>
+                    call: Call<ApiResponse>,
+                    response: Response<ApiResponse>
                 ) {
                     if (response.isSuccessful) {
+                        val url = response.body()?.requestMetadata?.amazonUrl
+                        val food = response.body()?.product?.title
+                        val price = response.body()?.product?.buyboxWinner?.subscribeAndSave?.basePrice?.raw
+                        binding.apple.text = food
+                        binding.price.text = price
+                        binding.priceName.text = url
                         Log.e("Success", response.body().toString())
                     }
                 }
 
-                override fun onFailure(call: Call<MutableList<PostModel>>, t: Throwable) {
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                     t.printStackTrace()
                     Log.e("Failure", t.message.toString())
                 }
             })
-        }
-    }
-
-    fun showPrice() {
-        binding.submitButton.setOnClickListener{ view: View ->
-            if (binding.apple.text.equals("Apple")) {
-                binding.price.text = "5"
-            }
         }
     }
 
