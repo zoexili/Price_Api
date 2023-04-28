@@ -32,9 +32,6 @@ class PostViewHolder(private val binding: CardPostBinding): RecyclerView.ViewHol
             apiResponse.body()?.product?.buyboxWinner?.subscribeAndSave?.basePrice?.raw
         val variants = apiResponse.body()?.product?.variants
         if (variants != null) {
-            binding.image.text = variants[0].mainImage
-        }
-        if (variants != null) {
             Picasso.get().load(variants[0].mainImage).resize(600, 600).into(binding.imageView)
         }
     }
