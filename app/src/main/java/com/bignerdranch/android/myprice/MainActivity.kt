@@ -11,6 +11,8 @@ import com.bignerdranch.android.myprice.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.math.asin
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,47 +25,42 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView = binding.myRecyclerView
 
-        val asinList = listOf("B08ZFPQGK5", "B0B2N5GHMG", "")
+//        val asinList = listOf("B08ZFPQGK5", "B0B2N5GHMG", "B076Z6SDGR", "B0B52731W9",
+//            "B00OO77BL6", "B07K77SH7F", "B0829QQHCS")
+        val asinList = listOf("B08ZFPQGK5", "B076Z6SDGR")
+        val myasin1 = "B08ZFPQGK5"
+        val myasin2 = "B076Z6SDGR"
+
+
         val serviceGenerator = ServiceGenerator.buildService(ApiService::class.java)
         val myapi = "7E7D26AB23B04E929FEEE6151E907080"
         val mytype = "product"
         val mydomain = "amazon.com"
-        val myasin = "B08ZFPQGK5"
 
-        val call = serviceGenerator.getPosts(myapi, mytype, mydomain, myasin)
-        call.enqueue(object : Callback<ApiResponse> {
-            override fun onResponse(
-                call: Call<ApiResponse>,
-                response: Response<ApiResponse>
-            ) {
-                if (response.isSuccessful) {
+        val apiResponseList = mutableListOf<Response<ApiResponse>>()
+        for (myasin in asinList) {
+            val call = serviceGenerator.getPosts(myapi, mytype, mydomain, myasin)
+            call.enqueue(object : Callback<ApiResponse> {
+                override fun onResponse(
+                    call: Call<ApiResponse>,
+                    response: Response<ApiResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        apiResponseList.add(response)
+                    }
+
                     recyclerView.apply {
                         layoutManager = LinearLayoutManager(this@MainActivity)
-                        adapter = PostAdapter(response.body())
+                        adapter = PostAdapter(apiResponseList)
                     }
-
-
-
-                    val url = response.body()?.requestMetadata?.amazonUrl
-                    val food = response.body()?.product?.title
-                    val price =
-                        response.body()?.product?.buyboxWinner?.subscribeAndSave?.basePrice?.raw
-                    val variants = response.body()?.product?.variants
-                    if (variants != null) {
-                        val imageUrl = variants[0].mainImage
-                        binding.image.text = imageUrl
-                    }
-                    binding.product.text = food
-                    binding.price.text = price
-                    binding.url.text = url
-                    Log.e("Success", response.body().toString())
                 }
-            }
 
-            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
-                t.printStackTrace()
-                Log.e("Failure", t.message.toString())
-            }
-        })
+                override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
+                    t.printStackTrace()
+                    Log.e("Failure", t.message.toString())
+                }
+            })
+        }
+
     }
 }

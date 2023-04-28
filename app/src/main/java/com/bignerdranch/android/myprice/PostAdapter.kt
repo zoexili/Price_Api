@@ -1,39 +1,41 @@
 package com.bignerdranch.android.myprice
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.myprice.databinding.CardPostBinding
+import com.squareup.picasso.Picasso
 import retrofit2.Response
 
-class PostAdapter(val apiResponse: MutableList<Response<ApiResponse>>) : RecyclerView.Adapter<PostViewHolder>() {
+class PostAdapter(private val apiResponseList: MutableList<Response<ApiResponse>>) : RecyclerView.Adapter<PostViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.card_post, parent, false)
-        return PostViewHolder(view)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = CardPostBinding.inflate(inflater, parent, false)
+        return PostViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
-        return holder.bindView(apiResponse[position])
+        return holder.bind(apiResponseList[position])
     }
 
     override fun getItemCount(): Int {
-        return apiResponse.size
+        return apiResponseList.size
     }
 }
 
-class PostViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class PostViewHolder(private val binding: CardPostBinding): RecyclerView.ViewHolder(binding.root) {
 
-    private lateinit var binding: CardPostBinding
-
-    fun bindView(apiResponse: Response<ApiResponse>) {
+    fun bind(apiResponse: Response<ApiResponse>) {
         binding.url.text = apiResponse.body()?.requestMetadata?.amazonUrl
         binding.product.text = apiResponse.body()?.product?.title
         binding.price.text =
             apiResponse.body()?.product?.buyboxWinner?.subscribeAndSave?.basePrice?.raw
-//        val variants = apiResponse.body()?.product?.variants
-//        if (variants != null) {
-//            binding.image.text = variants[0].mainImage
-//        }
+        val variants = apiResponse.body()?.product?.variants
+        if (variants != null) {
+            binding.image.text = variants[0].mainImage
+        }
+        if (variants != null) {
+            Picasso.get().load(variants[0].mainImage).resize(600, 600).into(binding.imageView)
+        }
     }
 }
