@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.myprice.databinding.CardPostBinding
 import com.squareup.picasso.Picasso
 import retrofit2.Response
-import java.lang.reflect.Array.get
 
 class PostAdapter(private val apiResponseList: MutableList<Response<ApiResponse>>) : RecyclerView.Adapter<PostViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -41,10 +40,14 @@ class PostViewHolder(private val binding: CardPostBinding): RecyclerView.ViewHol
             Picasso.get().load(variants[0].mainImage).resize(600, 600).into(binding.imageView)
         }
         binding.urlButton.setOnClickListener {
-            val openURL = Intent(Intent.ACTION_VIEW)
-            openURL.data = Uri.parse(myUrl.toString())
-
+//            val openURL = Intent(Intent.ACTION_VIEW)
+//            openURL.data = Uri.parse(myUrl.toString())
+//
+//            binding.root.context.startActivity(openURL)
+            val openURL = Intent(binding.root.context, WebviewActivity::class.java)
+            openURL.putExtra("url", myUrl.toString())
             binding.root.context.startActivity(openURL)
+
         }
     }
 }

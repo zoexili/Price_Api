@@ -3,6 +3,7 @@ package com.bignerdranch.android.myprice
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.webkit.WebViewClient
+import com.bignerdranch.android.myprice.databinding.ActivityMainBinding
 import com.bignerdranch.android.myprice.databinding.ActivityWebviewBinding
 
 class WebviewActivity : AppCompatActivity() {
@@ -11,10 +12,14 @@ class WebviewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_webview)
+        binding = ActivityWebviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.webView.webViewClient = WebViewClient()
-        binding.webView.loadUrl("https://www.google.com/")
+        val url = intent.getStringExtra("url")
+        if (url != null) {
+            binding.webView.loadUrl(url)
+        }
         binding.webView.settings.javaScriptEnabled = true
         binding.webView.settings.setSupportZoom(true)
     }
