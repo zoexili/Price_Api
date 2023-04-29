@@ -22,16 +22,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         val recyclerView = binding.myRecyclerView
 
-//        val asinList = listOf("B08ZFPQGK5", "B0B2N5GHMG", "B076Z6SDGR", "B0B52731W9",
-//            "B00OO77BL6", "B07K77SH7F", "B0829QQHCS")
-        val asinList = listOf("B08ZFPQGK5", "B076Z6SDGR")
-        val myasin1 = "B08ZFPQGK5"
-        val myasin2 = "B076Z6SDGR"
-
-
+//        val asinList = listOf("B08ZFPQGK5", "B00OO77BL6", "B07K77SH7F", "B0829QQHCS")
+        val asinList = listOf("B08ZFPQGK5", "B00OO77BL6")
         val serviceGenerator = ServiceGenerator.buildService(ApiService::class.java)
         val myapi = "7E7D26AB23B04E929FEEE6151E907080"
         val mytype = "product"
